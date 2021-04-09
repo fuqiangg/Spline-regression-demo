@@ -99,24 +99,14 @@ knot as parameters to be estimated
 $$
 y = b_0 + b_1x + b_2(x-c)(x>c) +e
 $$
-
-$$
-\left\{
-  \begin{align}
-y &= b_0 + b_1x, \ when \ x \leq c \\
-y &= b_0 - b_2c + (b_1 + b_2)x, \ when \ x > c \\
-  \end{align}
-\right.
-$$
 ```{r}
 set.seed(49)
-library(nlme)
-spline_formula <- as.formula(jobsat ~ (athh <= c)*(b0 + b1*athh) + 
-                                      (athh > c)*(b0 - b2*c + (b1 + b2)*athh))
+spline_formula <- as.formula(jobsat ~ b0 + b1*athh + b2*(athh - c)*(athh > c))
 
 model2 <- nls(spline_formula,
-              start = list(b0 = 2.4919, b1 = 0.83799, b2 = -0.61005, c = 3), 
-              data = spdata_piece, control = nls.control(maxiter = 100000))
+              start = list(b0 = 2.5, b1 = 0.5, b2 = -0.5, c = 3), 
+              data = spdata_piece, 
+              control = nls.control(maxiter = 100000))
 overview(model2)
 ```
 
@@ -147,5 +137,14 @@ Comparison
 3.70246 + 0.02939x (w = 1, x > 3) 
 
 (b) spline regression (knot = 3.56686)
-2.44045  + 0.42633x   (w = 0, x <= 3)
-4.540724 + (-0.1625)x (w = 1, x > 3) 
+2.44045  + 0.42633x   (w = 0, x <= knot)
+4.540724 + (-0.1625)x (w = 1, x > knot) 
+
+$$
+\left\{
+  \begin{align}
+y &= b_0 + b_1x, \ when \ x \leq c \\
+y &= b_0 - b_2c + (b_1 + b_2)x, \ when \ x > c \\
+  \end{align}
+\right.
+$$
