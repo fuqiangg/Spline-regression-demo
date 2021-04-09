@@ -25,12 +25,11 @@ psych::describe(spdata1) #Descriptives
 
 # 1.1 Piecewise Regression
 $$Y = a_0 + a_1X + a_2W + a_3XW + e$$
-
 ```{r}
 spdata_piece <- spdata1 %>%
   mutate(
-         w = if_else(athh > 3, 1, 0), #relationship 
-         relh_int = relh*w
+         w = if_else(athh > 3, 1, 0), #au 
+         athh_con = athh - 3
          ) 
 
 model1 <- lm(jobsat~ athh + w + athh:w, data = spdata_piece)
@@ -62,22 +61,44 @@ ggplot(data=spdata_piece,
   stat_function(fun = rwrap(line2, 3,5), geom="line",col="red")
 ```
 
+## 1.3 Potting piecewise (force the two segments to meet at fixed point c - see Eq.7)
+```{r}
+model1_con <- lm(jobsat~ athh + athh_con:w, data = spdata_piece)
+summary(model1_con)
+
+line1_con <- function(x) {coef(model1_con)["(Intercept)"] + coef(model1_con)["athh"]*x}
+line2_con <- function(x) {coef(model1_con)["(Intercept)"] + coef(model1_con)["athh"]*x +
+                          coef(model1_con)["athh_con:w"]*(x-3)
+                        }
+
+rwrap=function(f,xmin,xmax){ff=function(x){y=f(x);y[x>xmax]=NA;y[x<xmin]=NA;y}}
+
+ggplot(data=spdata_piece,
+  aes(x = athh, y = jobsat))+
+  theme_bw() +
+  scale_y_continuous(limits=c(1, 5))+
+  scale_x_continuous(limits = c(1, 5)) + 
+  stat_function(fun = rwrap(line1_con, 1,3), geom="line",col="blue") + 
+  stat_function(fun = rwrap(line2_con, 3,5), geom="line",col="red")
+```
+
+
 # 2.1 Spline regression
 $$
 Y = b_0 + b_1X + b_2(X-c) +e
 $$
-```{r}
-spline_formula <- 
-  as.formula(jobsat ~ (athh <= c)* (b0 + b1*athh) 
-                    + (athh > c)*((b0 - b2*c)+ (b1 + b2)*athh))
 
-model2 <- nls(spline_formula, 
-              start = list(b0 = 2.06434, b1 = 0.83799, b2 = -0.61005, c = 3), 
+```{r}
+library(nlme)
+spline_formula <- as.formula(jobsat ~ (athh <= c)*(b0 + b1*athh) + (athh > c)*(b0 - b2*c + (b1 + b2)*athh))
+
+model2 <- nls(spline_formula,
+              start = list(b0 = 2.4919, b1 = 0.83799, b2 = -0.61005, c = 3), 
               data = spdata_piece, control = nls.control(maxiter = 100000))
 overview(model2)
 ```
 
-# 2.1 Plotting spline regression
+# 2.2 Plotting spline regression
 ```{r}
 line3 <- function(x) {coef(model2)["b0"] + coef(model2)["b1"]*x}
 line4 <- function(x) {coef(model2)["b0"] - coef(model2)["b2"]*coef(model2)["c"] +
@@ -90,9 +111,10 @@ ggplot(data=spdata_piece,
   theme_bw() +
   scale_y_continuous(limits=c(1, 5))+
   scale_x_continuous(limits = c(1, 5)) + 
-  stat_function(fun = rwrap(line3, 1,3), geom="line",col="blue") + 
-  stat_function(fun = rwrap(line4, 3,5), geom="line",col="red")
+  stat_function(fun = rwrap(line3, 1, coef(model2)["c"]), geom="line",col="blue") + 
+  stat_function(fun = rwrap(line4, coef(model2)["c"], 5), geom="line",col="red")
 ```
+
 
 #2.064344 + 0.6060848x
 #3.340438 + 0.1746831x
