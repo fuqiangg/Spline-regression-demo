@@ -1,10 +1,7 @@
-# Spline regression demo
+# Spline regression 
 1. Piecewise regression 
-$$
-Y = a_0 + a_1X + a_2W + a_3XW + e
-$$
+<img src="https://latex.codecogs.com/gif.latex? Y=b_0 + b_1X + b_2W + b_3XW + e} t " />
 
 2. spline regression with single knot
-$$
-Y = b_0 + b_1X + b_2(X-c) +e
-$$
+
+<img src="https://latex.codecogs.com/gif.latex? Y=b_0 + b_1X + b_2W + b_3XW + e} t " />
