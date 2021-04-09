@@ -16,8 +16,8 @@ w means desired job attribute <br />
 ## 2. Analysis 
 Analysis is in the Rmd file (spline regression.Rmd) <br /> 
 
-Block 1.1 and 1.2 (plot) include a simple piecewise regression y = a0 + a1x + a2w + a3xw, and W is a dummy variable that equals 0 when x(authority) is less than or equal to 3, and equals 1 when x is greater than 3. <br /> 
+Block 1.1 and 1.2 (plot) include a simple piecewise regression y = a0 + a1x + a2w + a3xw, in which w is a dummy variable that equals 0 when x(authority) is less than or equal to 3, and equals 1 when x is greater than 3. <br /> 
 
-Block 1.3 contains plot of continuous piecewise regression <br /> 
+Block 1.3 is a plot of continuous piecewise regression <br /> 
 
-Block 2.1 and 2.2 include the equivalent spline regression <br /> 
+Block 2.1 and 2.2 (plot) include spline regression with one knot <br /> 
