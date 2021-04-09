@@ -1,7 +1,7 @@
 # Spline regression 
 
 ## 1. Data
-The data for this demo is from this article Edwards, J. R., & Parry, M. E. (2018). On the use of spline regression in the study of congruence in organizational research. Organizational Research Methods, 21(1), 68-110. <br /> 
+The data for this demo comes from this article Edwards, J. R., & Parry, M. E. (2018). On the use of spline regression in the study of congruence in organizational research. Organizational Research Methods, 21(1), 68-110. <br /> 
 The link for the original data is http://public.kenan-flagler.unc.edu/faculty/edwardsj/index.htm <br /> 
 
 I select some variables of job attributes: athh, athw, relh, relw, varh, varw, auth, autw, jobsat <br /> 
